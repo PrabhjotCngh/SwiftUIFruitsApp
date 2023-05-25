@@ -8,19 +8,38 @@
 import SwiftUI
 
 struct ContentView: View {
+    //MARK: - Properties
+    @State private var isShowingSettings: Bool = false
+    var fruits: [Fruit] = fruitsData
+    
+    //MARK: - Body
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .padding()
+        NavigationView {
+            List(fruits.shuffled()) { fruit in
+                NavigationLink(destination: FruitDetailView(fruit: fruit)) {
+                    FruitRowView(fruit: fruit)
+                        .padding(.vertical, 4)
+                }
+            } //: List
+            .navigationTitle("Fruits")
+            .toolbar {
+                Button {
+                    isShowingSettings = true
+                } label: {
+                    Image(systemName: "slider.horizontal.3")
+                } //: Button
+                .sheet(isPresented: $isShowingSettings) {
+                    SettingsView()
+                }
+            }
+        } //: NavigationView
+        .navigationViewStyle(.stack)
     }
 }
 
+//MARK: - Preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(fruits: fruitsData)
     }
 }
